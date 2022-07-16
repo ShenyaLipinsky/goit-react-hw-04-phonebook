@@ -13,7 +13,6 @@ export const App = () => {
   });
   const [filter, setFilter] = useState('');
 
-  console.log(contacts);
   // const savedLocalData = localStorage.getItem(LS_KEY);
   // const parsedLocalData = JSON.parse(localStorage.getItem(LS_KEY));
 
@@ -23,11 +22,6 @@ export const App = () => {
   //   }
   //   setContacts(() => { return JSON.parse(localStorage.getItem(LS_KEY)) ?? []});
   // }, []);
-
-  useEffect(() => {
-    localStorage.setItem(LS_KEY, JSON.stringify(contacts));
-  }, [contacts]);
-
   // componentDidUpdate(prevState) {
   //   if (prevState.contacts !== this.state.contacts || null) {
   //     return localStorage.setItem(
@@ -37,13 +31,15 @@ export const App = () => {
   //   }
   //   return;
   // }
+  useEffect(() => {
+    localStorage.setItem(LS_KEY, JSON.stringify(contacts));
+  }, [contacts]);
 
   const handleChange = evt => {
     setFilter(evt.target.value);
   };
 
   const filterItems = (arr, query) => {
-    console.log(arr);
     if (arr.length !== 0 || null) {
       let newArray = arr.filter(
         el => el.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
@@ -54,15 +50,16 @@ export const App = () => {
   };
 
   const addContact = values => {
-    setContacts(contacts => {
+    setContacts(prevContacts => {
       if (
-        contacts.find(
+        prevContacts.find(
           contact => contact.name.toLowerCase() === values.name.toLowerCase()
         )
       ) {
-        return alert(`${values.name} is already in contacts.`);
+        alert(`${values.name} is already in contacts.`);
+        return [...prevContacts];
       }
-      return [...contacts, values];
+      return [...prevContacts, values];
     });
   };
 
@@ -73,6 +70,7 @@ export const App = () => {
       return prevState.filter(el => el.id !== id);
     });
   };
+
   return (
     <Box
       mt={4}
